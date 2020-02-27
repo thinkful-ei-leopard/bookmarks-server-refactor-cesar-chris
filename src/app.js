@@ -4,6 +4,7 @@ const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
 const { NODE_ENV} = require('./config')
+const BookmarksService = require('./bookmarks-service')
 const bookmarkRouter = require('./bookmarks/bookmarks-router')
 
 const app = express()
@@ -30,6 +31,13 @@ app.use(function validateBearerToken(req, res, next) {
 //Route
 app.use('/bookmarks', bookmarkRouter)
 
+app.get('/bookmarks', (req, res, next) => {
+   BookmarksService.getAllBookmarks(knexInstance)
+        .then(bookmarks => {
+            res.json(bookmarks)
+        })
+        .catch(next);
+})
 
 app.get('/', (req, res) => {
     res.send('Hello, World!')
